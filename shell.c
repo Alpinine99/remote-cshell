@@ -1,14 +1,16 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <limits.h>
 #include "shell.h"
 
 output_struct *output_p;
 output_struct output;
 
 void err_f(char* error_m) {
-    output.error = malloc(strlen(error_m) + 1);
-    sprintf(output.error, error_m);
+    output.error = malloc(strlen(error_m) + 10);
+    sprintf(output.error, "error - %s", error_m);
     output.code = 1;
 }
 
@@ -16,6 +18,23 @@ void out_f(char* results) {
     output.output = malloc(strlen(results) + 1);
     sprintf(output.output, results);
     output.code = 0;
+}
+
+void get_cwd() {
+    long size = pathconf(".", _PC_PATH_MAX);
+    if (size == -1) size = 1024; // fallback
+    char *cwd = malloc(size);
+    if (cwd == NULL) {
+        err_f("malloc failed!");
+        return;
+    }
+    if (getcwd(cwd, size) != NULL) {
+	output.pwd = malloc(strlen(cwd) + 1);
+        sprintf(output.pwd, cwd);
+    } else {
+        err_f("getcwd() failed!");
+    }
+    free(cwd);
 }
 
 int run_c(char *cmd) {
@@ -47,6 +66,7 @@ int run_c(char *cmd) {
 	out_f(results);
     }
 
+    get_cwd();
     output_p = &output;
     free(results);
     pclose(fp);
