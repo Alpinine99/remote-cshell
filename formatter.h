@@ -2,12 +2,12 @@
 #define FORMATTER_H
 
 typedef struct {
-    string prompt;
-    char prompt_color[10];
-    char output_color[10];
+    char* prompt;
+    char* prompt_color;
+    char* output_color;
 } config;
 
-int print_f(string, config);
-int print_n(string);
+int print_f(char*, config);
+int print_n(char*);
 
 #endif

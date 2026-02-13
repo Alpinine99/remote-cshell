@@ -1,0 +1,7 @@
+formatter.o
+libformatter.a
+libshell.a
+shell.o
+master
+slave
+

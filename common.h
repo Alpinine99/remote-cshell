@@ -9,7 +9,4 @@
 #define CYAN "\x1b[36;1m"
 #define RESET "\x1b[0m"
 
-#define STRLEN 1024 
-typedef char* string;
-
 #endif
