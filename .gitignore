@@ -4,4 +4,5 @@ libshell.a
 shell.o
 master
 slave
-
+test
+test.c

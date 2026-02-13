@@ -71,7 +71,7 @@ int main() {
     } while (strncmp(cmd, "exit", 4) != 0);
 
     // CLOSE CONNECTION
-    printf("Clossing connection\n");
+    printf("Closing connection\n");
     close(master_c);
     close(socket_c);
 

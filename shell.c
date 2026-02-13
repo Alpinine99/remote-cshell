@@ -43,27 +43,35 @@ int run_c(char *cmd) {
     char buffer[buffer_size];
     char* results = malloc(buffer_size);
 
-    if (fp == NULL)
-        err_f("popen failed");
-    else if (results == NULL)
-        err_f("malloc failed!");
-    else {
-	results[0] = '\0';
-	while (fgets(buffer, sizeof(buffer), fp) != NULL) {
-	    size_t len = strlen(results);
-            size_t chuck_len = strlen(buffer);
-	    
-	    if (len + chuck_len + 1 > buffer_size) {
-	        buffer_size *= 2;
-		results = realloc(results, buffer_size);
-		if (results == NULL) {
-	            err_f("realloc failed!");
-		    break;
-		}
-	    }
-	    strcat(results, buffer);
+    if (strncmp(cmd, "cd ", 3) == 0) {
+	char *path = cmd + 3;
+	printf("%s\n", path);
+	if (chdir(path) != 0) {
+	    err_f("chdir failed");
 	}
-	out_f(results);
+    } else {
+	if (fp == NULL)
+	    err_f("popen failed");
+	else if (results == NULL)
+	    err_f("malloc failed!");
+	else {
+	    results[0] = '\0';
+	    while (fgets(buffer, sizeof(buffer), fp) != NULL) {
+		size_t len = strlen(results);
+		size_t chuck_len = strlen(buffer);
+		
+		if (len + chuck_len + 1 > buffer_size) {
+		    buffer_size *= 2;
+		    results = realloc(results, buffer_size);
+		    if (results == NULL) {
+			err_f("realloc failed!");
+			break;
+		    }
+		}
+		strcat(results, buffer);
+	    }
+	    out_f(results);
+	}
     }
 
     get_cwd();
