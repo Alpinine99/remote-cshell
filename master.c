@@ -4,28 +4,50 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <pthread.h>
 #include <string.h>
 #include <stdbool.h>
 #include "common.h"
 #include "formatter.h"
 
-#define PORT 2223
 bool connected = false;
 
 void *receiver(void *);
 
-int main()
+int main(int argc, char *argv[])
 {
-
-    // SOCKET
-    int socket_c = socket(AF_INET, SOCK_STREAM, 0);
-    pthread_t receiver_t;
+    unsigned int PORT;
+    char *slave_address;
+    if (argc < 3)
+    {
+        fprintf(stderr, RED "E - Usage: %s <slave_address> <slave_port>\n" RESET, argv[0]);
+        return 1;
+    }
+    else
+    {
+        slave_address = argv[1];
+        PORT = atoi(argv[2]);
+        if (PORT <= 0 || PORT > 65535)
+        {
+            fprintf(stderr, RED "E - Invalid port number '%s'. Please provide a number between 1 and 65535.\n" RESET, argv[2]);
+            return 1;
+        }
+    }
+    printf(GREEN "I - Connecting to slave at %s on port %d...\n" RESET, slave_address, PORT);
 
     struct sockaddr_in sock_addr;
     sock_addr.sin_family = AF_INET;
     sock_addr.sin_port = htons(PORT);
-    sock_addr.sin_addr.s_addr = INADDR_ANY;
+    if (inet_pton(AF_INET, slave_address, &sock_addr.sin_addr) <= 0)
+    {
+        fprintf(stderr, RED "E - Invalid slave address '%s'.\n" RESET, slave_address);
+        return 1;
+    }
+
+    // SOCKET
+    int socket_c = socket(AF_INET, SOCK_STREAM, 0);
+    pthread_t receiver_t;
 
     // CONNECTING TO SLAVE
     int sock_status = connect(socket_c, (struct sockaddr *)&sock_addr, sizeof(sock_addr));
