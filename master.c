@@ -49,7 +49,7 @@ int main() {
     }
 
     // CLOSE CONNECTION
-    printf(GREEN "I - Clossing connection\n" RESET);
+    printf(GREEN "I - Closing connection\n" RESET);
     close(socket_c);
 
     // JOIN THREAD

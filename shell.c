@@ -38,18 +38,19 @@ void get_cwd() {
 }
 
 int run_c(char *cmd) {
-    FILE *fp = popen(cmd, "r");
-    size_t buffer_size = 1024;
-    char buffer[buffer_size];
-    char* results = malloc(buffer_size);
-
     if (strncmp(cmd, "cd ", 3) == 0) {
 	char *path = cmd + 3;
-	printf("%s\n", path);
+	path[strlen(path) - 1] = '\0';
+	out_f("");
 	if (chdir(path) != 0) {
 	    err_f("chdir failed");
 	}
     } else {
+	FILE *fp = popen(cmd, "r");
+	size_t buffer_size = 1024;
+	char buffer[buffer_size];
+	char* results = malloc(buffer_size);
+
 	if (fp == NULL)
 	    err_f("popen failed");
 	else if (results == NULL)
@@ -72,12 +73,12 @@ int run_c(char *cmd) {
 	    }
 	    out_f(results);
 	}
+        free(results);
+	pclose(fp);
     }
 
     get_cwd();
     output_p = &output;
-    free(results);
-    pclose(fp);
     return output.code;
 }
 
