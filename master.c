@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
     char *slave_address;
     if (argc < 3)
     {
-        fprintf(stderr, RED "E - Usage: %s <slave_address> <slave_port>\n" RESET, argv[0]);
+        fprintf(stderr, RED "\aE - Usage: %s <slave_address> <slave_port>\n" RESET, argv[0]);
         return 1;
     }
     else
@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
         PORT = atoi(argv[2]);
         if (PORT <= 0 || PORT > 65535)
         {
-            fprintf(stderr, RED "E - Invalid port number '%s'. Please provide a number between 1 and 65535.\n" RESET, argv[2]);
+            fprintf(stderr, RED "\aE - Invalid port number '%s'. Please provide a number between 1 and 65535.\n" RESET, argv[2]);
             return 1;
         }
     }
@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
     sock_addr.sin_port = htons(PORT);
     if (inet_pton(AF_INET, slave_address, &sock_addr.sin_addr) <= 0)
     {
-        fprintf(stderr, RED "E - Invalid slave address '%s'.\n" RESET, slave_address);
+        fprintf(stderr, RED "\aE - Invalid slave address '%s'.\n" RESET, slave_address);
         return 1;
     }
 
