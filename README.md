@@ -14,6 +14,7 @@ This is a simple c project that allows for remote shell connection and run comma
 | --- | --- |
 | gcc | ✅ |
 | make | ✅ |
+| binutils | ✅ |
 
 - *Clone the repository and move into the directory.*
 
